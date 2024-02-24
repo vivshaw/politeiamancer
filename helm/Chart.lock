@@ -1,0 +1,9 @@
+dependencies:
+- name: cassandra
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 10.11.2
+- name: kafka
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 26.11.2
+digest: sha256:528caa575f6a466d86515adebad1ca6e6d69bd43cc611347c30d967be4ba55a6
+generated: "2024-02-22T23:53:31.905264073-05:00"

@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_PASSWORD: foobarbaz3!
+      POSTGRES_DB: postgres
+
+  ingest:
+    image: vivshaw/politeiamancer-ingest:${VERSION}
+    depends_on:
+      - db
+    environment:
+        - VERSION=${VERSION}
+    env_file:
+      - ./ingest/praw_creds.env
