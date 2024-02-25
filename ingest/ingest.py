@@ -52,18 +52,17 @@ class RedditCommentIngester:
                 # Turn the comment into somethin' JSON-serializable
                 comment_as_json: dict[str, str] = {
                     # ID
-                    "id": comment.id,
+                    "fullname": comment.name,
                     
                     # Comment details
                     "author": comment.author.name,
                     "body": comment.body,
                     "downvotes": comment.downs,
-                    "name": comment.name,
-                    "over_18": comment.over_18,
                     "permalink": comment.permalink,
-                    "subreddit": comment.subreddit.display_name,
-                    "timestamp": comment.created_utc,
                     "upvotes": comment.ups,
+
+                    # Time
+                    "timestamp": comment.created_utc,
                 }
 
                 # Logs

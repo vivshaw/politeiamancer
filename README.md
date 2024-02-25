@@ -5,7 +5,7 @@
 
 ```sh
 ❯ cd ingest
-❯ docker build -t vivshaw/politeiamancer-ingest:{INSERT VERSION HERE} .
+❯ docker build -t vivshaw/politeiamancer-ingest:{INSERT VERSION HERE} ./ingest
 ❯ docker push vivshaw/politeiamancer-ingest:{INSERT VERSION HERE}
 ```
 
