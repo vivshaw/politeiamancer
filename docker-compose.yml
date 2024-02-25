@@ -4,7 +4,7 @@ services:
   ingest:
     image: vivshaw/politeiamancer-ingest:${VERSION}
     depends_on:
-      - kafka
+      - kafka1
     environment:
         - VERSION=${VERSION}
     env_file:
