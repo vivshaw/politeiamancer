@@ -20,7 +20,7 @@ class RedditCommentIngester:
         self.reddit = self.__initialize_reddit_client__()
         self.kafka_producer = KafkaProducer(
             api_version=(0, 10, 1),
-            bootstrap_servers = ['kafka:9092'],
+            bootstrap_servers = ['kafka1:9092'],
             value_serializer = lambda x: dumps(x).encode('utf-8')
         )
 

@@ -6,7 +6,7 @@
 ```sh
 ❯ cd ingest
 ❯ docker build -t vivshaw/politeiamancer-ingest:{INSERT VERSION HERE} .
-❯ docker push vivshaw/politeiamancer-ingest:0.0.10
+❯ docker push vivshaw/politeiamancer-ingest:{INSERT VERSION HERE}
 ```
 
 ## on docker-compose
@@ -19,13 +19,13 @@
 
 don't use these instructions, they're 100% busted
 
-## minikube up n' running
+### minikube up n' running
 ```sh
 ❯ minikube start
-❯ eval "$(ssh-agent -s)"
+❯ eval $(minikube -p minikube docker-env)
 ```
 
-## Working with the helm chart
+### Working with the helm chart
 
 ```sh
 ❯ helm dependency update ./helm

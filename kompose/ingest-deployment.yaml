@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: ingest
+  name: ingest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: ingest
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: ingest
+    spec:
+      containers:
+        - env:
+            - name: REDDIT_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  key: REDDIT_CLIENT_ID
+                  name: ingest-praw-creds-env
+            - name: REDDIT_CLIENT_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  key: REDDIT_CLIENT_SECRET
+                  name: ingest-praw-creds-env
+            - name: VERSION
+              value: 0.0.11
+            - name: PYTHONUNBUFFERED
+              value: "1"
+          image: 'vivshaw/politeiamancer-ingest:0.0.11'
+          name: ingest
+          resources: {}
+      restartPolicy: Always
+status: {}

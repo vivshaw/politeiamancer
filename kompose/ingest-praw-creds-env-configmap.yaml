@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  REDDIT_CLIENT_ID: INSERT_CLIENT_ID_HERE
+  REDDIT_CLIENT_SECRET: INSERT_CLIENT_SECRET_HERE
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: ingest-ingest-praw_creds-env
+  name: ingest-praw-creds-env
