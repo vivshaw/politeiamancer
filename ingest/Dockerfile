@@ -1,9 +1,12 @@
 From python:3.10
 
+# Set up working dir
 WORKDIR /ingest
+COPY ./ingest.py ./ingest.py
+COPY ./requirements.txt ./requirements.txt
 
-COPY . .
-
+# Install Python dependencies
 RUN pip install -r requirements.txt
 
-CMD ["python", "ingest.py"]
+# Let's rock!
+CMD ["python3", "ingest.py"]
