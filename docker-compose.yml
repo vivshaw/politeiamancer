@@ -6,10 +6,18 @@ services:
     image: vivshaw/politeiamancer-ingest:${VERSION}
     depends_on:
       - kafka1
+      - cassandra
     environment:
         - VERSION=${VERSION}
     env_file:
       - ./ingest/praw_creds.env
+
+  analyze:
+    container_name: analyze
+    image: vivshaw/politeiamancer-analyze:${VERSION}
+    depends_on:
+      - kafka1
+      - cassandra
 
   zookeeper:
     container_name: zookeeper
