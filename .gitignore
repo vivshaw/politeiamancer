@@ -40,5 +40,8 @@ venv.bak/
 # Cython debug symbols
 cython_debug/
 
+# IDE
+.vscode
+
 # Secrets
 ingest/praw_creds.env
