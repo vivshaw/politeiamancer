@@ -30,6 +30,8 @@ services:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_SERVERS: zookeeper:2888:3888
 
+  # can't be named `kafka` or else you will get this fun bug:
+  # https://github.com/confluentinc/schema-registry/issues/689
   kafka1:
     container_name: kafka1
     image: confluentinc/cp-kafka:7.3.2

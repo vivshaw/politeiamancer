@@ -14,7 +14,7 @@ VERSION = os.getenv("VERSION")
 
 class RedditCommentIngester:
     """
-    A class that stands up a Reddit and Kafka client, and uses them to stream comment data.
+    A class that stands up a Reddit and Kafka client, and uses them to stream comment data into Kafka.
     """
     def __init__(self) -> None:
         self.reddit = self.__initialize_reddit_client__()
