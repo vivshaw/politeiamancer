@@ -22,6 +22,6 @@ CREATE TABLE IF NOT EXISTS r_politics_comments(
     mentions_biden boolean,
 
     -- Keys
-    PRIMARY KEY((author), comment_timestamp)
+    PRIMARY KEY((fullname), comment_timestamp)
 )
 WITH CLUSTERING ORDER BY (comment_timestamp DESC);

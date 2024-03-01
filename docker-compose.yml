@@ -19,6 +19,15 @@ services:
       - kafka1
       - cassandra
 
+  viz:
+    container_name: viz
+    image: vivshaw/politeiamancer-viz:${VERSION}
+    depends_on:
+      - ingest
+      - analyze
+    ports:
+      - "3000:3000"
+
   zookeeper:
     container_name: zookeeper
     image: confluentinc/cp-zookeeper:7.3.2
