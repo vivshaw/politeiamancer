@@ -25,3 +25,19 @@ CREATE TABLE IF NOT EXISTS r_politics_comments(
     PRIMARY KEY((fullname), comment_timestamp)
 )
 WITH CLUSTERING ORDER BY (comment_timestamp DESC);
+
+CREATE TABLE IF NOT EXISTS sentiment_moving_average(
+    -- ID
+    uuid uuid,
+
+    --Time
+    analysis_timestamp timestamp,
+
+    -- Analytics
+    sentiment_average float,
+    type text,
+
+    -- Keys
+    PRIMARY KEY((type), analysis_timestamp))
+WITH CLUSTERING ORDER BY (analysis_timestamp DESC);
+CREATE INDEX IF NOT EXISTS ON sentiment_moving_average (uuid);

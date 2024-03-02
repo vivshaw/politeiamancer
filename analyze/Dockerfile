@@ -25,5 +25,5 @@ CMD sleep 75 && \
         # see: https://github.com/apache/spark/pull/38828
         --conf spark.driver.extraJavaOptions="-Divy.cache.dir=/tmp -Divy.home=/tmp" \
         # Can't line-break this blob of stuff else Spark blows up (๑ᵕ⌓ᵕ̤)
-        --packages com.datastax.spark:spark-cassandra-connector_2.12:3.5.0,org.apache.spark:spark-streaming-kafka-0-10_2.12:3.5.0,org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 \
+        --packages com.datastax.spark:spark-cassandra-connector_2.12:3.4.0,org.apache.spark:spark-streaming-kafka-0-10_2.12:3.4.0,org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.0 \
         analyze.py

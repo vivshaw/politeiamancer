@@ -11,12 +11,15 @@ Analysis of Social Media Text. Eighth International Conference on Weblogs and So
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import (
+    avg,
     col,
     current_timestamp,
     from_json,
-    from_unixtime,
+    lit,
     lower,
+    to_timestamp,
     udf,
+    window,
 )
 from pyspark.sql.types import (
     FloatType,
@@ -25,6 +28,7 @@ from pyspark.sql.types import (
     StructField,
     StructType,
 )
+import uuid
 
 # Cassandra and Kafka connection params
 CASSANDRA_COMMENTS_TABLE = "r_politics_comments"
@@ -46,7 +50,7 @@ kafka_schema = StructType(
         StructField("permalink", StringType(), True),
         StructField("upvotes", IntegerType(), True),
         # Time
-        StructField("timestamp", FloatType(), True),
+        StructField("timestamp", IntegerType(), True),
     ]
 )
 
@@ -62,6 +66,14 @@ def sentiment_score(text: str) -> float:
     valence_scores = sentiment_intensity_analyzer.polarity_scores(text)
     sentiment = valence_scores["compound"]
     return sentiment
+
+
+@udf(returnType=StringType())
+def make_uuid():
+    """
+    Spark UDF to generate a UUID
+    """
+    return str(uuid.uuid1())
 
 
 class RedditCommentAnalyzer:
@@ -109,7 +121,7 @@ class RedditCommentAnalyzer:
         # We want a separate timestamp for the comment's timestamp, and the time we
         # ran the analysis.
         with_timestamps_df = (
-            parsed_df.withColumn("comment_timestamp", from_unixtime(col("timestamp")))
+            parsed_df.withColumn("comment_timestamp", to_timestamp(col("timestamp")))
             .withColumn("analysis_timestamp", current_timestamp())
             .drop("timestamp")
         )
@@ -124,12 +136,84 @@ class RedditCommentAnalyzer:
             "sentiment_score", sentiment_score(col("body"))
         )
 
-        # Write out to Cassandra
+        # Write out all comments to Cassandra
         with_sentiments_df.writeStream.format("org.apache.spark.sql.cassandra").option(
             "checkpointLocation", "/tmp/checkpoint/"
         ).option("failOnDataLoss", "false").option(
             "keyspace", CASSANDRA_KEYSPACE
         ).option("table", CASSANDRA_COMMENTS_TABLE).start()
+
+        # Raw comments are not that useful, so let's do some aggregation!
+        # Let's start with minute-by-minute average sentiment score.
+        overall_moving_averages_df = (
+            with_sentiments_df.withWatermark("comment_timestamp", "3 minutes")
+            .groupBy(window("comment_timestamp", "3 minutes", "1 minute"))
+            .agg(avg("sentiment_score").alias("sentiment_average"))
+            .withColumn("uuid", make_uuid())
+            .withColumn("type", lit("overall"))
+            .withColumn("analysis_timestamp", col("window.end"))
+            .drop("window")
+        )
+
+        # Write out batches of aggregated sentiment scores
+        overall_moving_averages_df.writeStream.trigger(
+            processingTime="10 seconds"
+        ).foreachBatch(
+            lambda df, _: df.write.format("org.apache.spark.sql.cassandra")
+            .option("checkpointLocation", "/tmp/checkpoint/")
+            .option("table", "sentiment_moving_average")
+            .option("keyspace", CASSANDRA_KEYSPACE)
+            .mode("append")
+            .save()
+        ).outputMode("update").start()
+
+        # Now, average sentiment score for comments mentioning Trump.
+        trump_moving_averages_df = (
+            with_sentiments_df.filter(lower(col("body")).like("%trump%"))
+            .withWatermark("comment_timestamp", "3 minutes")
+            .groupBy(window("comment_timestamp", "3 minutes", "1 minute"))
+            .agg(avg("sentiment_score").alias("sentiment_average"))
+            .withColumn("uuid", make_uuid())
+            .withColumn("type", lit("trump"))
+            .withColumn("analysis_timestamp", col("window.end"))
+            .drop("window")
+        )
+
+        # Write out batches of aggregated Trump sentiment scores
+        trump_moving_averages_df.writeStream.trigger(
+            processingTime="10 seconds"
+        ).foreachBatch(
+            lambda df, _: df.write.format("org.apache.spark.sql.cassandra")
+            .option("checkpointLocation", "/tmp/checkpoint/")
+            .option("table", "sentiment_moving_average")
+            .option("keyspace", CASSANDRA_KEYSPACE)
+            .mode("append")
+            .save()
+        ).outputMode("update").start()
+
+        # Lastly, average sentiment score for comments mentioning Biden.
+        biden_moving_averages_df = (
+            with_sentiments_df.filter(lower(col("body")).like("%biden%"))
+            .withWatermark("comment_timestamp", "3 minutes")
+            .groupBy(window("comment_timestamp", "3 minutes", "1 minute"))
+            .agg(avg("sentiment_score").alias("sentiment_average"))
+            .withColumn("uuid", make_uuid())
+            .withColumn("type", lit("biden"))
+            .withColumn("analysis_timestamp", col("window.end"))
+            .drop("window")
+        )
+
+        # Write out batches of aggregated Trump sentiment scores
+        biden_moving_averages_df.writeStream.trigger(
+            processingTime="10 seconds"
+        ).foreachBatch(
+            lambda df, _: df.write.format("org.apache.spark.sql.cassandra")
+            .option("checkpointLocation", "/tmp/checkpoint/")
+            .option("table", "sentiment_moving_average")
+            .option("keyspace", CASSANDRA_KEYSPACE)
+            .mode("append")
+            .save()
+        ).outputMode("update").start()
 
         self.spark.streams.awaitAnyTermination()
 

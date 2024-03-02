@@ -68,7 +68,7 @@ class RedditCommentIngester:
                     "permalink": comment.permalink,
                     "upvotes": comment.ups,
                     # Time
-                    "timestamp": comment.created_utc,
+                    "timestamp": int(comment.created_utc),
                 }
 
                 # Logs
