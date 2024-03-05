@@ -56,4 +56,4 @@ don't use these instructions, they're 100% busted
 
 ## TODO
 
-[ ] Figure out what to do about ready/liveness probes- currently disabled
+- [ ] Figure out what to do about ready/liveness probes- currently disabled
