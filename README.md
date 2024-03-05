@@ -14,7 +14,7 @@ You too can eat straight from the trash can of ideology, now in realtime! Fun!!
 
 ## Data Protection & Compliance
 
-politeiamancer complies with Reddit's [Developer Data Protection Addendum](https://www.redditinc.com/policies/developer-dpa) by simply not storing any comments. The comments are ingested into Kafka, streamed into Spark for analysis, and then dropped. All that is retained are the analytics results.
+politeiamancer complies with Reddit's [Developer Data Protection Addendum](https://www.redditinc.com/policies/developer-dpa) by simply not storing any Reddit data. The comments are ingested into Kafka, streamed into Spark for analysis, and then dropped. All that is retained are the analytics results.
 
 ## Development
 
