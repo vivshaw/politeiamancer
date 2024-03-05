@@ -134,8 +134,8 @@
         ]
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
+        "h": 14,
+        "w": 16,
         "x": 0,
         "y": 0
       },
@@ -165,11 +165,54 @@
           "queryType": "query",
           "rawQuery": true,
           "refId": "A",
-          "target": "select type, sentiment_average, analysis_timestamp from r_politics.sentiment_moving_average where analysis_timestamp>$__timeFrom and analysis_timestamp<$__timeTo ALLOW FILTERING;"
+          "target": "select type, sentiment_average, window_timestamp from r_politics.sentiment_moving_average where window_timestamp>$__timeFrom and window_timestamp<$__timeTo ALLOW FILTERING;"
         }
       ],
       "title": "Average Sentiment of /r/politics, 3-minute sliding window",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "af2850c3-dd76-48c1-aef1-66ce765b7a55"
+      },
+      "description": "",
+      "gridPos": {
+        "h": 14,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      },
+      "id": 2,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "",
+          "url": "https://github.com/vivshaw/politeiamancer/"
+        }
+      ],
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "# politeiamancer\n\n## What is this?\n\npoliteiamancer performs sentiment analysis on live streaming comment data from [the /r/politics subreddit](https://www.reddit.com/r/politics/). It tracks overall sentiment, as well as sentiment for comments mentioning the 2024 Presidential candidates specifically.\n\n## Why would I want this?\n\n_You too_ can eat straight from the trash can of ideology, now in realtime! Fun!!\n\n## Why the silly name?\n\n - [πολιτεία](https://en.wikipedia.org/wiki/Politeia) (Gr.): citizenship, the community of citizens, a polity\n - [μᾰντείᾱ](https://en.wiktionary.org/wiki/%CE%BC%CE%B1%CE%BD%CF%84%CE%B5%CE%AF%CE%B1#Ancient_Greek) (Gr.): prophecy, divination, oracle\n - anything is a perfectly cromulent prefix if you believe hard enough\n\n ## OK, but how does it work?\n\n This app is built on the the Apache data stack, using Kafka, Cassandra, and Spark to perform streaming analytics. See [the GitHub repo](https://github.com/vivshaw/politeiamancer) for more details, or to fire it up locally yourself.",
+        "mode": "markdown"
+      },
+      "pluginVersion": "10.2.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "af2850c3-dd76-48c1-aef1-66ce765b7a55"
+          },
+          "datasourceId": 1,
+          "refId": "A"
+        }
+      ],
+      "title": "streaming data analysis on /r/politics",
+      "type": "text"
     }
   ],
   "refresh": "30s",

@@ -62,13 +62,10 @@ class RedditCommentIngester:
                     # ID
                     "fullname": comment.name,
                     # Comment details
-                    "author": comment.author.name,
                     "body": comment.body,
-                    "downvotes": comment.downs,
                     "permalink": comment.permalink,
-                    "upvotes": comment.ups,
                     # Time
-                    "timestamp": int(comment.created_utc),
+                    "created_utc": int(comment.created_utc),
                 }
 
                 # Logs
