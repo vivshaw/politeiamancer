@@ -31,7 +31,7 @@ class RedditCommentIngester:
             value_serializer=lambda x: dumps(x).encode("utf-8"),
         )
 
-    def __initialize_reddit_client__(self) -> None:
+    def __initialize_reddit_client__(self):
         """
         Set up the Reddit client instance.
         I'm using a read-only PRAW intance because I have no need to post comments.
@@ -58,7 +58,7 @@ class RedditCommentIngester:
             try:
                 # Turn the comment into somethin' JSON-serializable, and drop the
                 # fields I don't care about
-                selected_comment_fields: dict[str, str] = {
+                selected_comment_fields: dict[str, str | int] = {
                     # ID
                     "fullname": comment.name,
                     # Comment details
