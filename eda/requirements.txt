@@ -3,4 +3,5 @@ matplotlib==3.8.3
 NRCLex==3.0.0
 pandas==2.2.1
 python-dotenv==1.0.1
+seaborn==0.13.2
 textblob==0.18.0
